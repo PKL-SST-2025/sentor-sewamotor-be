@@ -13,6 +13,10 @@ use sqlx::PgPool;
 mod routes;
 mod model;
 use routes::auth::auth_router;
+use routes::orders::order_router;
+use routes::motor::motor_router;
+use routes::profils::profils_router;
+use routes::users::users_router;
 
 #[tokio::main]
 async fn main() {
@@ -28,6 +32,14 @@ async fn main() {
     let app = Router::new()
         // Merge auth routes (register & login)
         .merge(auth_router())
+        // Merge order routes (orders & bookings)
+        .merge(order_router())
+        // Merge motor routes (motors CRUD)
+        .merge(motor_router())
+        // Merge profils routes (profils CRUD)
+        .nest("/api/profils", profils_router())
+        // Merge users routes (users CRUD)
+        .nest("/api/users", users_router())
         // Your API routes should come first
         .route("/api/hello", get(|| async { "Hello from your Axum backend!" }))
         

@@ -30,6 +30,8 @@ pub struct LoginRequest {
 #[derive(Serialize)]
 pub struct TokenResponse {
     pub token: String,
+    pub user_id: String, // Tambahkan user_id untuk frontend
+    pub username: String, // Tambahkan username juga
 }
 
 // Buat router khusus auth
@@ -74,8 +76,8 @@ pub async fn login(
 ) -> Result<RespJson<TokenResponse>, (StatusCode, String)> {
     println!("Login attempt - Username: {}, Password: {}", payload.username, payload.password);
     
-    let row: (Uuid,) = sqlx::query_as(
-        "SELECT id FROM users WHERE username = $1 AND password_hash = $2"
+    let row: (Uuid, String) = sqlx::query_as(
+        "SELECT id, username FROM users WHERE username = $1 AND password_hash = $2"
     )
     .bind(&payload.username)
     .bind(&payload.password) // cek plain text dulu
@@ -86,10 +88,12 @@ pub async fn login(
         (StatusCode::UNAUTHORIZED, "Username atau password salah".into())
     })?;
 
-    println!("Login successful for user: {}", row.0);
+    println!("Login successful for user: {} ({})", row.1, row.0);
     
-    // Return dummy token untuk testing
+    // Return token dengan user_id dan username untuk frontend
     Ok(RespJson(TokenResponse { 
-        token: format!("dummy_token_for_{}", row.0)
+        token: format!("dummy_token_for_{}", row.0),
+        user_id: row.0.to_string(),
+        username: row.1,
     }))
 }
