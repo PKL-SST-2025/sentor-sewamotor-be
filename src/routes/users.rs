@@ -1,4 +1,4 @@
-use axum::{
+    use axum::{
     Router,
     routing::get,
     extract::{Extension, Path},
