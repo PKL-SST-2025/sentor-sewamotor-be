@@ -96,7 +96,7 @@ async fn main() {
         .layer(CorsLayer::new().allow_origin(Any).allow_methods(Any).allow_headers(Any));
 
     let host = std::env::var("SERVER_HOST").unwrap_or_else(|_| "127.0.0.1".to_string());
-    let port = std::env::var("SERVER_PORT").unwrap_or_else(|_| "8001".to_string());
+    let port = std::env::var("SERVER_PORT").unwrap_or_else(|_| "8000".to_string());
     let addr = format!("{}:{}", host, port);
     println!("🚀 Listening on http://{}", addr);
     println!("📦 Pool status: max=10");
