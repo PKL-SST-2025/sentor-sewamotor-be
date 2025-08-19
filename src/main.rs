@@ -95,7 +95,9 @@ async fn main() {
         // Add CORS for frontend
         .layer(CorsLayer::new().allow_origin(Any).allow_methods(Any).allow_headers(Any));
 
-    let addr = "127.0.0.1:8000";
+    let host = std::env::var("SERVER_HOST").unwrap_or_else(|_| "127.0.0.1".to_string());
+    let port = std::env::var("SERVER_PORT").unwrap_or_else(|_| "8001".to_string());
+    let addr = format!("{}:{}", host, port);
     println!("🚀 Listening on http://{}", addr);
     println!("📦 Pool status: max=10");
 
